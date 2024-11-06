@@ -43,6 +43,15 @@ describe('LotteryPlatform', function () {
       await lotteryPlatform.createLottery('');
       expect(await lotteryPlatform.lotteryCounter()).to.equal(1);
     });
+
+    it('Should returns active lotteries', async function () {
+      await lotteryPlatform.createLottery('');
+      await lotteryPlatform.createLottery('');
+      await lotteryPlatform.createLottery('');
+      await lotteryPlatform.buyTicket(1);
+      const activeLotteries = await lotteryPlatform.getActiveLotteries();
+      expect(activeLotteries.length).to.equal(3); // 3 + 1 (deployed one) - 1 (inactive)
+    });
   });
 
   describe('Ticket Purchase', function () {

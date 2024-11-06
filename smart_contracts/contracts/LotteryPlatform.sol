@@ -150,4 +150,29 @@ contract LotteryPlatform {
         return ownerLotteries;
     }
 
+    function getActiveLotteries() 
+        public view 
+        returns (Lottery[] memory) 
+    {
+        uint256 activeCount = 0;
+
+        for (uint256 i = 1; i <= lotteryCounter; i++) {
+            if (lotteries[i].isActive) {
+                activeCount++;
+            }
+        }
+
+        uint256 index = 0;
+        Lottery[] memory activeLotteries = new Lottery[](activeCount);
+
+        for (uint256 i = 1; i <= lotteryCounter; i++) {
+            if (lotteries[i].isActive) {
+                activeLotteries[index] = lotteries[i];
+                index++;
+            }
+        }
+
+        return activeLotteries;
+    }
+
 }
