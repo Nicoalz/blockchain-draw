@@ -1,0 +1,19 @@
+// Copy this file to create a new Page
+
+import type { NextPage } from "next";
+import Head from "next/head";
+import TemplateScreen from "@/screens/TemplateScreen";
+
+const Template: NextPage = () => {
+  return (
+    <>
+      <Head>
+        <title>Template</title> // The page title (visible on tab browser)
+        <meta name="description" content="Template" /> // The page description (visible on tab browser)
+      </Head>
+      <TemplateScreen /> // Create and import the screen (from ./Screens)
+    </>
+  );
+};
+
+export default Template;

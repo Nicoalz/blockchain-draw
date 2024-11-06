@@ -1,0 +1,37 @@
+# Build output
+.next/
+out/
+dist/
+build/
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Coverage directory
+coverage/
+
+# Miscellaneous
+.DS_Store
+.eslintcache
+*.pem
+*.tsbuildinfo
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Compiled output
+tmp/
+temp/
+
+# global.css file
+styles/global.css
