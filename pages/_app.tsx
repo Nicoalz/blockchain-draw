@@ -7,6 +7,7 @@ import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { config, INITIAL_CHAIN } from '../config/wagmiProvider';
+import { Toaster } from '@/components/ui/toaster';
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           locale="en-US"
           theme={darkTheme()}
         >
+          <Toaster />
           <Layout>
             <Component {...pageProps} />
           </Layout>

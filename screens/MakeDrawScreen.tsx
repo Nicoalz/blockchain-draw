@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,12 +10,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useAccount } from 'wagmi';
+import { useRouter } from 'next/router';
 import { Loader2 } from 'lucide-react';
 
 export default function MakeDrawScreen() {
   const [selectedLottery, setSelectedLottery] = useState('');
   const [isDrawing, setIsDrawing] = useState(false);
   const [winner, setWinner] = useState<string | null>(null);
+  const userAccount = useAccount();
+  const router = useRouter();
 
   const activeLotteries = [
     { id: '1', name: 'Weekly Jackpot' },
@@ -36,6 +40,18 @@ export default function MakeDrawScreen() {
     setWinner(mockWinner);
     setIsDrawing(false);
   };
+
+  const { isConnected } = userAccount;
+
+  useEffect(() => {
+    if (!isConnected) {
+      router.push('/');
+    }
+  }, [isConnected]);
+
+  if (!isConnected) {
+    return null;
+  }
 
   return (
     <Card className="max-w-md mx-auto">

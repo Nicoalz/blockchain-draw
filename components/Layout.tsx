@@ -3,6 +3,7 @@ import Header from './Header';
 // import Footer from './footer'
 
 import React from 'react';
+import { Toaster } from './ui/toaster';
 
 interface LayoutProps {
   children: React.ReactNode;

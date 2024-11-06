@@ -1,3 +1,4 @@
+import Loader from '@/components/Loader';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -6,20 +7,52 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { formatDateHour } from '@/functions/utils/date';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Lottery } from '@/contracts-data';
+import { lotteryContract } from '@/contracts-data/lotteryContract';
+import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { Address } from 'viem';
+import { useChainId, useReadContract } from 'wagmi';
 
 const HomeScreen: React.FC = () => {
-  const activeLotteries = [
-    { id: 1, name: 'Weekly Jackpot', prize: '100 ETH', endTime: '2023-06-30' },
-    {
-      id: 2,
-      name: 'Monthly Mega Draw',
-      prize: '500 ETH',
-      endTime: '2023-07-31',
+  const [contractAddress, setContractAddress] = useState<Address | undefined>(); // => the contract address to use
+  const [activeLotteries, setActiveLotteries] = useState<Lottery[]>([]);
+  const [isLotteriesLoading, setIsLotteriesLoading] = useState(true);
+  const chainId = useChainId();
+
+  useEffect(() => {
+    const addressOfChainId = lotteryContract.address[chainId];
+    setContractAddress(addressOfChainId);
+  }, [chainId]);
+
+  const { refetch: getActiveLotteries } = useReadContract({
+    abi: lotteryContract.abi,
+    address: contractAddress,
+    functionName: 'getActiveLotteries',
+    query: {
+      enabled: false,
     },
-    { id: 3, name: 'Crypto Bonanza', prize: '1000 ETH', endTime: '2023-08-15' },
-  ];
+  });
+
+  useEffect(() => {
+    setIsLotteriesLoading(true);
+    if (!contractAddress) {
+      setIsLotteriesLoading(false);
+      return;
+    }
+    const fetchContract = async () => {
+      const { data: activeLotteries } = await getActiveLotteries();
+      if (!activeLotteries) {
+        setIsLotteriesLoading(false);
+        return;
+      }
+      setActiveLotteries(activeLotteries as Lottery[]);
+      setIsLotteriesLoading(false);
+    };
+    fetchContract();
+  }, [contractAddress, getActiveLotteries]);
 
   return (
     <div className="w-full">
@@ -27,20 +60,23 @@ const HomeScreen: React.FC = () => {
         Welcome to <span className="gradient-text">Web3 Lottery</span>
       </h1>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {activeLotteries.map(lottery => (
-          <Card key={lottery.id}>
-            <CardHeader>
-              <CardTitle>{lottery.name}</CardTitle>
-              <CardDescription>Prize: {lottery.prize}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-4">Ends on: {formatDateHour(lottery.endTime)}</p>
-              <Link href={`/lottery/${lottery.id}`} passHref>
-                <Button className="w-full">View Details</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
+        {isLotteriesLoading ? (
+          <Skeleton className="w-full h-[100px]" />
+        ) : (
+          activeLotteries.map(lottery => (
+            <Card key={lottery.id}>
+              <CardHeader>
+                <CardTitle>{lottery.name}</CardTitle>
+                <CardDescription>Prize: Free</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link href={`/lottery/${lottery.id}`} passHref>
+                  <Button className="w-full">View Details</Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>{' '}
     </div>
   );

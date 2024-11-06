@@ -3,22 +3,61 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { useAccount, useWriteContract } from 'wagmi';
+import { type Address } from 'viem';
+import { lotteryContract } from '@/contracts-data/lotteryContract';
+import { useToast } from '@/hooks/use-toast';
 
 export default function CreateLotteryScreen() {
   const [lotteryName, setLotteryName] = useState('');
-  const [prizeName, setPrizeName] = useState('');
-  const [ticketPrice, setTicketPrice] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const userAccount = useAccount(); // get current account
+  const router = useRouter();
+  const { toast } = useToast();
 
-  const handleSubmit = () => {
-    console.log('Creating lottery:', {
-      lotteryName,
-      prizeName,
-      ticketPrice,
-      endDate,
+  const { writeContract, isPending, isSuccess } = useWriteContract();
+
+  const [contractAddress, setContractAddress] = useState<Address | undefined>(); // => the address to use
+  const { chainId } = useAccount(); // get current account
+
+  useEffect(() => {
+    if (!chainId) return; // if no chainId stop
+    const addressOfChainId = lotteryContract.address[chainId]; // find the address with current chainId
+    setContractAddress(addressOfChainId);
+  }, [chainId]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast({
+        title: 'Lottery Created',
+        description: 'Your lottery has been created successfully',
+      });
+      setLotteryName('');
+    }
+  }, [isSuccess]);
+
+  const handleCreateLottery = () => {
+    if (!contractAddress) return; // if no address stop
+    writeContract({
+      abi: lotteryContract.abi,
+      address: contractAddress,
+      functionName: 'createLottery',
+      args: [lotteryName],
     });
   };
+
+  const { isConnected } = userAccount;
+
+  useEffect(() => {
+    if (!isConnected) {
+      router.push('/');
+    }
+  }, [isConnected]);
+
+  if (!isConnected) {
+    return null;
+  }
 
   return (
     <Card className="max-w-md mx-auto">
@@ -26,7 +65,7 @@ export default function CreateLotteryScreen() {
         <CardTitle>Create a New Lottery</CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="lotteryName">Lottery Name</Label>
             <Input
@@ -36,7 +75,7 @@ export default function CreateLotteryScreen() {
               required
             />
           </div>
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="prizeName">Prize Name</Label>
             <Input
               id="prizeName"
@@ -65,11 +104,17 @@ export default function CreateLotteryScreen() {
               onChange={e => setEndDate(e.target.value)}
               required
             />
-          </div>
-          <Button type="submit" className="w-full">
-            Create Lottery
+          </div> */}
+          <Button
+            disabled={isPending || !lotteryName}
+            type="button"
+            onClick={handleCreateLottery}
+            className="w-full"
+          >
+            {isPending && 'Pending'}
+            {!isPending && 'Create Lottery'}
           </Button>
-        </form>
+        </div>
       </CardContent>
     </Card>
   );
