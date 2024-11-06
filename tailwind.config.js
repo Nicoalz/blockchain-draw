@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /** @type {import('tailwindcss').Config} */
+import animate from 'tailwindcss-animate';
+
 module.exports = {
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
@@ -81,5 +83,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [animate],
 };
