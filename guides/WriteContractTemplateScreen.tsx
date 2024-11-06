@@ -48,9 +48,9 @@ const WriteContractTemplateScreen: React.FC = () => {
   return (
     <div className="w-full">
       <h1>Template : Write contract</h1>
-      <div className="flex flex-col w-fit text-black">
+      <div className="flex flex-col text-black w-fit">
         <input
-          className=" my-2"
+          className="my-2 "
           type="text"
           placeholder="Address"
           value={mintTo}
@@ -59,7 +59,7 @@ const WriteContractTemplateScreen: React.FC = () => {
           }}
         />
         <input
-          className=" my-2"
+          className="my-2 "
           type="number"
           placeholder="amount"
           value={mintAmount}
