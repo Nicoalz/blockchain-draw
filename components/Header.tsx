@@ -52,7 +52,7 @@ const Header: React.FC = () => {
         </nav>
 
         <nav // Desktop menu
-          className={`hidden sm:flex items-center justify-center`}
+          className={'hidden sm:flex items-center justify-center'}
         >
           {links.map((link, index) => (
             <Link
