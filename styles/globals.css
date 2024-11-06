@@ -18,7 +18,7 @@ body {
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 217 60% 60%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -71,10 +71,18 @@ body {
   }
 }
 
+.gradient-text {
+  background-image: linear-gradient(90deg, #818cf8, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
