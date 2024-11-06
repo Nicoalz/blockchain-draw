@@ -34,3 +34,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# sc
+# Add to your existing .gitignore
+smart_contracts/artifacts
+smart_contracts/cache
+smart_contracts/typechain-types
+smart_contracts/coverage
+smart_contracts/coverage.json
+smart_contracts/gas-report.txt
+smart_contracts/.env
+smart_contracts/node_modules
