@@ -10,7 +10,6 @@ describe('LotteryPlatform', function () {
   let owner;
   let addr1;
   let addr2;
-  let addrs;
 
   beforeEach(async function () {
     // Get the ContractFactory and Signers here.
@@ -160,6 +159,14 @@ describe('LotteryPlatform', function () {
       expect(userLotteries.length).to.equal(1);
       expect(userTickets[0].owner).to.equal(addr1.address);
       // creator of lottery check is  not mandatory as we check if it s there not the creator
+    });
+
+    it('User 2 should be in one lottery', async function () {
+      await lotteryPlatform.connect(addr2).buyTicket(lotteryId);
+      const userTickets = await lotteryPlatform.getTicketsOf(addr2.address);
+      const userLotteries = await lotteryPlatform.getLotteriesOf(addr2.address);
+      expect(userTickets.length).to.equal(1);
+      expect(userLotteries.length).to.equal(1);
     });
   });
 

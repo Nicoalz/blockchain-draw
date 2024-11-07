@@ -281,7 +281,7 @@ const lotteryContractAbi = [
 ];
 
 const lotteryContractAddressBaseSepolia =
-  '0x3C3b4BF89E9357fed6480fc5C0d007E42393Ad4d' as Address;
+  '0x15247Cf96cF134191e26a8caf748CF90C3f97042' as Address;
 
 export const lotteryContract: TContract = {
   abi: lotteryContractAbi,

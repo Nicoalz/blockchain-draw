@@ -97,26 +97,25 @@ contract LotteryPlatform {
         public view 
         returns (Lottery[] memory) 
     {
-        uint256[] memory creatorLotteries = userLotteries[creator];
-        uint256 activeCount = 0;
+        uint256 drawableCount = 0;
 
-        for (uint256 i = 0; i < creatorLotteries.length; i++) {
-            if (lotteries[creatorLotteries[i]].isActive) {
-                activeCount++;
+        for (uint256 i = 1; i <= lotteryCounter; i++) {
+            if (lotteries[i].isActive && lotteries[i].creator == creator) {
+                drawableCount++;
             }
         }
 
         uint256 index = 0;
-        Lottery[] memory activeLotteries = new Lottery[](activeCount);
+        Lottery[] memory drawableLotteries = new Lottery[](drawableCount);
 
-        for (uint256 i = 0; i < creatorLotteries.length; i++) {
-            if (lotteries[creatorLotteries[i]].isActive) {
-                activeLotteries[index] = lotteries[creatorLotteries[i]];
+        for (uint256 i = 1; i <= lotteryCounter; i++) {
+            if (lotteries[i].isActive && lotteries[i].creator == creator) {
+                drawableLotteries[index] = lotteries[i];
                 index++;
             }
         }
 
-        return activeLotteries;
+        return drawableLotteries;
     }
 
     function getWinningTicket(uint256 lotteryId) 
