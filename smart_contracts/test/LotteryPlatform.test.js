@@ -167,23 +167,21 @@ describe('LotteryPlatform', function () {
     });
 
     it('Should return active lotteries for creator', async function () {
-      const activeLotteries = await lotteryPlatform.getDrawableLotteryIds(
-        owner.address,
-      );
-      expect(activeLotteries.length).to.equal(2);
-      expect(activeLotteries[0]).to.equal(firstLotteryId);
-      expect(activeLotteries[1]).to.equal(secondLotteryId);
+      const myCreatedActiveLotteries =
+        await lotteryPlatform.getDrawableLotteries(owner.address);
+      expect(myCreatedActiveLotteries.length).to.equal(2);
+      expect(myCreatedActiveLotteries[0].id).to.equal(firstLotteryId);
+      expect(myCreatedActiveLotteries[1].id).to.equal(secondLotteryId);
     });
 
     it('Should not include inactive lotteries', async function () {
       await lotteryPlatform.buyTicket(firstLotteryId);
       await lotteryPlatform.drawWinner(firstLotteryId);
-      const activeLotteries = await lotteryPlatform.getDrawableLotteryIds(
-        owner.address,
-      );
+      const myCreatedActiveLotteries =
+        await lotteryPlatform.getDrawableLotteries(owner.address);
 
-      expect(activeLotteries.length).to.equal(1);
-      expect(activeLotteries[0]).to.equal(secondLotteryId);
+      expect(myCreatedActiveLotteries.length).to.equal(1);
+      expect(myCreatedActiveLotteries[0].id).to.equal(secondLotteryId);
     });
   });
 });
