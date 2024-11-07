@@ -120,8 +120,31 @@ const lotteryContractAbi = [
   },
   {
     inputs: [{ internalType: 'address', name: 'creator', type: 'address' }],
-    name: 'getDrawableLotteryIds',
-    outputs: [{ internalType: 'uint256[]', name: '', type: 'uint256[]' }],
+    name: 'getDrawableLotteries',
+    outputs: [
+      {
+        components: [
+          { internalType: 'uint256', name: 'id', type: 'uint256' },
+          { internalType: 'string', name: 'name', type: 'string' },
+          { internalType: 'address', name: 'creator', type: 'address' },
+          { internalType: 'bool', name: 'isActive', type: 'bool' },
+          { internalType: 'uint256', name: 'winningTicketId', type: 'uint256' },
+          {
+            components: [
+              { internalType: 'uint256', name: 'id', type: 'uint256' },
+              { internalType: 'uint256', name: 'lotteryId', type: 'uint256' },
+              { internalType: 'address', name: 'owner', type: 'address' },
+            ],
+            internalType: 'struct LotteryPlatform.Ticket[]',
+            name: 'tickets',
+            type: 'tuple[]',
+          },
+        ],
+        internalType: 'struct LotteryPlatform.Lottery[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -252,7 +275,7 @@ const lotteryContractAbi = [
 ];
 
 const lotteryContractAddressBaseSepolia =
-  '0x4FECF7cF80a56a93d4724F3E5d9553d0Af264929' as Address;
+  '0xbF40c0Ab92D8763367a56EC1cfBD4Fc94374FA12' as Address;
 
 export const lotteryContract: TContract = {
   abi: lotteryContractAbi,
