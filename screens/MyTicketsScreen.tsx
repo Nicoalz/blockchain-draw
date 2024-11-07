@@ -64,7 +64,6 @@ export default function MyTicketsScreen() {
         return;
       }
 
-      console.log(lotteries);
       const tickets = (lotteries as Lottery[]).flatMap((lottery: Lottery) => {
         return lottery.tickets
           .filter(ticket => ticket.owner === userAddress)
@@ -76,7 +75,6 @@ export default function MyTicketsScreen() {
           }));
       });
 
-      console.log(tickets);
       if (!tickets) {
         setIsTicketsLoading(false);
         return;
