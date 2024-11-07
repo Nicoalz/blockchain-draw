@@ -14,7 +14,6 @@ import {
   useAccount,
   useChainId,
   useReadContract,
-  useTransactionConfirmations,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi';

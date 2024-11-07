@@ -35,6 +35,9 @@ export default function CreateLotteryScreen() {
     if (isSuccess) {
       toast({
         title: 'Lottery Created',
+        style: {
+          cursor: 'pointer',
+        },
         description: 'Your lottery has been created successfully',
         onClick: () => {
           window.open(`https://sepolia.basescan.org/tx/${txHash}`, '_blank');
