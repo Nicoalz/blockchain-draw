@@ -7,6 +7,7 @@ contract LotteryPlatform {
         uint256 id;
         uint256 lotteryId;
         address owner;
+        bool isWinning;
     }
 
     struct Lottery {
@@ -61,7 +62,8 @@ contract LotteryPlatform {
         Ticket memory newTicket = Ticket({
             id: ticketId,
             lotteryId: lotteryId,
-            owner: msg.sender
+            owner: msg.sender,
+            isWinning: false
         });
 
         tickets[ticketId] = newTicket;
@@ -85,6 +87,8 @@ contract LotteryPlatform {
         uint256 randomIndex = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, msg.sender))) % lottery.tickets.length;
         lottery.winningTicketId = lottery.tickets[randomIndex].id;
         lottery.isActive = false;
+
+        tickets[lottery.winningTicketId].isWinning = true;
 
         emit LotteryDrawn(lotteryId, lottery.winningTicketId);
     }
