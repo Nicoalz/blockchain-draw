@@ -89,9 +89,9 @@ contract LotteryPlatform {
         emit LotteryDrawn(lotteryId, lottery.winningTicketId);
     }
 
-    function getDrawableLotteryIds(address creator) 
+    function getDrawableLotteries(address creator) 
         public view 
-        returns (uint256[] memory) 
+        returns (Lottery[] memory) 
     {
         uint256[] memory creatorLotteries = userLotteries[creator];
         uint256 activeCount = 0;
@@ -102,12 +102,12 @@ contract LotteryPlatform {
             }
         }
 
-        uint256[] memory activeLotteries = new uint256[](activeCount);
         uint256 index = 0;
+        Lottery[] memory activeLotteries = new Lottery[](activeCount);
 
         for (uint256 i = 0; i < creatorLotteries.length; i++) {
             if (lotteries[creatorLotteries[i]].isActive) {
-                activeLotteries[index] = creatorLotteries[i];
+                activeLotteries[index] = lotteries[creatorLotteries[i]];
                 index++;
             }
         }
