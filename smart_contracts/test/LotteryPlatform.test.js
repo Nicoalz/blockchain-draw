@@ -145,6 +145,14 @@ describe('LotteryPlatform', function () {
       await lotteryPlatform.connect(addr1).buyTicket(lotteryId);
     });
 
+    it('Should correctly be a winning ticket', async function () {
+      await lotteryPlatform.drawWinner(lotteryId);
+      const userTickets = await lotteryPlatform.getTicketsOf(addr1.address);
+      expect(userTickets[0].isWinning).to.be.true;
+      const lottery = await lotteryPlatform.lotteries(lotteryId);
+      expect(lottery.winningTicketId).to.equal(userTickets[0].id);
+    });
+
     it('Should correctly return user tickets and lotteries', async function () {
       const userTickets = await lotteryPlatform.getTicketsOf(addr1.address);
       const userLotteries = await lotteryPlatform.getLotteriesOf(addr1.address);
