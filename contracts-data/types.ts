@@ -8,6 +8,7 @@ export interface Ticket {
   id: number;
   lotteryId: number;
   owner: Address;
+  isWinning: boolean;
 }
 
 export interface Lottery {

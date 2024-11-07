@@ -12,18 +12,22 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function CreateLotteryScreen() {
   const [lotteryName, setLotteryName] = useState('');
-  const userAccount = useAccount(); // get current account
+  const userAccount = useAccount();
   const router = useRouter();
   const { toast } = useToast();
 
-  const { writeContract, isPending, isSuccess } = useWriteContract();
-
-  const [contractAddress, setContractAddress] = useState<Address | undefined>(); // => the address to use
-  const { chainId } = useAccount(); // get current account
+  const {
+    writeContract,
+    isPending,
+    isSuccess,
+    data: txHash,
+  } = useWriteContract();
+  const [contractAddress, setContractAddress] = useState<Address | undefined>();
+  const { chainId } = useAccount();
 
   useEffect(() => {
-    if (!chainId) return; // if no chainId stop
-    const addressOfChainId = lotteryContract.address[chainId]; // find the address with current chainId
+    if (!chainId) return;
+    const addressOfChainId = lotteryContract.address[chainId];
     setContractAddress(addressOfChainId);
   }, [chainId]);
 
@@ -32,13 +36,16 @@ export default function CreateLotteryScreen() {
       toast({
         title: 'Lottery Created',
         description: 'Your lottery has been created successfully',
+        onClick: () => {
+          window.open(`https://sepolia.basescan.org/tx/${txHash}`, '_blank');
+        },
       });
       setLotteryName('');
     }
-  }, [isSuccess]);
+  }, [isSuccess, toast]);
 
   const handleCreateLottery = () => {
-    if (!contractAddress) return; // if no address stop
+    if (!contractAddress) return;
     writeContract({
       abi: lotteryContract.abi,
       address: contractAddress,
@@ -53,7 +60,7 @@ export default function CreateLotteryScreen() {
     if (!isConnected) {
       router.push('/');
     }
-  }, [isConnected]);
+  }, [isConnected, router]);
 
   if (!isConnected) {
     return null;
@@ -75,36 +82,7 @@ export default function CreateLotteryScreen() {
               required
             />
           </div>
-          {/* <div className="space-y-2">
-            <Label htmlFor="prizeName">Prize Name</Label>
-            <Input
-              id="prizeName"
-              value={prizeName}
-              onChange={e => setPrizeName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="ticketPrice">Ticket Price (ETH)</Label>
-            <Input
-              id="ticketPrice"
-              type="number"
-              step="0.01"
-              value={ticketPrice}
-              onChange={e => setTicketPrice(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="endDate">End Date</Label>
-            <Input
-              id="endDate"
-              type="date"
-              value={endDate}
-              onChange={e => setEndDate(e.target.value)}
-              required
-            />
-          </div> */}
+
           <Button
             disabled={isPending || !lotteryName}
             type="button"

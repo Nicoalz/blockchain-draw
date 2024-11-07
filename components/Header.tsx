@@ -43,7 +43,7 @@ const Header: React.FC = () => {
   const links = isConnected ? linksUserConnected : linksUserNotConnected;
 
   return (
-    <header className="sticky top-0 flex items-center justify-between w-full px-4 py-6 mb-12 md:px-10 backdrop-blur-lg bg-custom-dark-blue/70">
+    <header className="sticky top-0 z-50 flex items-center justify-between w-full px-4 py-6 mb-12 md:px-10 backdrop-blur-lg bg-custom-dark-blue/70">
       <Link href="/" className="text-2xl font-bold gradient-text">
         Web3 Lottery
       </Link>
@@ -55,7 +55,7 @@ const Header: React.FC = () => {
         }}
       ></div>
 
-      <div className="flex items-center justify-center font-bold">
+      <div className="flex items-center justify-center font-bold ">
         <nav // Mobile menu
           className={`
           absolute top-0 right-0 h-full bg-custom-dark-blue shadow-lg z-40

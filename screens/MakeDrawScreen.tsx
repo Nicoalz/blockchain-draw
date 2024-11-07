@@ -10,36 +10,118 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useAccount } from 'wagmi';
+import {
+  useAccount,
+  useChainId,
+  useReadContract,
+  useTransactionConfirmations,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi';
 import { useRouter } from 'next/router';
 import { Loader2 } from 'lucide-react';
+import { Address } from 'viem';
+import { lotteryContract } from '@/contracts-data/lotteryContract';
+import { Lottery, Ticket } from '@/contracts-data';
+import { useToast } from '@/hooks/use-toast';
 
 export default function MakeDrawScreen() {
   const [selectedLottery, setSelectedLottery] = useState('');
   const [isDrawing, setIsDrawing] = useState(false);
+  const [myActiveLotteries, setMyActiveLotteries] = useState<Lottery[]>([]);
   const [winner, setWinner] = useState<string | null>(null);
   const userAccount = useAccount();
   const router = useRouter();
 
-  const activeLotteries = [
-    { id: '1', name: 'Weekly Jackpot' },
-    { id: '2', name: 'Monthly Mega Draw' },
-    { id: '3', name: 'Crypto Bonanza' },
-  ];
+  const [contractAddress, setContractAddress] = useState<Address | undefined>();
+  const chainId = useChainId();
+  const { toast } = useToast();
+  const {
+    writeContractAsync,
+    isPending,
+    isSuccess,
+    data: txHash,
+  } = useWriteContract();
 
-  const handleDraw = async () => {
-    if (!selectedLottery) return;
+  useEffect(() => {
+    const addressOfChainId = lotteryContract.address[chainId];
+    setContractAddress(addressOfChainId);
+  }, [chainId]);
 
+  const handleDrawLottery = async () => {
+    if (!contractAddress) return;
     setIsDrawing(true);
-    setWinner(null);
-
-    // Simulate API call to smart contract
-    await new Promise(resolve => setTimeout(resolve, 3000));
-
-    const mockWinner = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
-    setWinner(mockWinner);
-    setIsDrawing(false);
+    await writeContractAsync({
+      abi: lotteryContract.abi,
+      address: contractAddress,
+      functionName: 'drawWinner',
+      args: [selectedLottery],
+    });
   };
+
+  const { refetch: getMyActiveLotteries } = useReadContract({
+    abi: lotteryContract.abi,
+    address: contractAddress,
+    functionName: 'getDrawableLotteries',
+    args: [userAccount.address],
+    query: {
+      enabled: false,
+    },
+  });
+
+  const { refetch: getWinner } = useReadContract({
+    abi: lotteryContract.abi,
+    address: contractAddress,
+    functionName: 'getWinningTicket',
+    args: [selectedLottery],
+    query: {
+      enabled: false,
+    },
+  });
+
+  const { data: confirmationData, isLoading: isConfirmationLoading } =
+    useWaitForTransactionReceipt({
+      hash: txHash,
+    });
+
+  useEffect(() => {
+    if (confirmationData) {
+      const fetchWinner = async () => {
+        const { data: ticketWinner } = await getWinner();
+        if (!ticketWinner) {
+          setIsDrawing(false);
+          toast({
+            title: 'Error',
+            color: 'error',
+            description: 'Error fetching winner',
+          });
+          return;
+        }
+        setWinner((ticketWinner as Ticket).owner);
+        toast({
+          title: 'Success',
+          color: 'success',
+          onClick: () => {
+            window.open(`https://sepolia.basescan.org/tx/${txHash}`, '_blank');
+          },
+          description: 'Winner drawn successfully',
+        });
+        setIsDrawing(false);
+      };
+      if (isDrawing) fetchWinner();
+    }
+  }, [isPending, isSuccess, txHash, confirmationData]);
+
+  useEffect(() => {
+    if (!contractAddress) return;
+    const fetchContract = async () => {
+      const { data: myActiveLotteries } = await getMyActiveLotteries();
+      if (!myActiveLotteries) return;
+
+      setMyActiveLotteries(myActiveLotteries as Lottery[]);
+    };
+    fetchContract();
+  }, [contractAddress, getMyActiveLotteries]);
 
   const { isConnected } = userAccount;
 
@@ -47,7 +129,7 @@ export default function MakeDrawScreen() {
     if (!isConnected) {
       router.push('/');
     }
-  }, [isConnected]);
+  }, [isConnected, router]);
 
   if (!isConnected) {
     return null;
@@ -68,8 +150,12 @@ export default function MakeDrawScreen() {
               <SelectValue placeholder="Select a lottery" />
             </SelectTrigger>
             <SelectContent>
-              {activeLotteries.map(lottery => (
-                <SelectItem key={lottery.id} value={lottery.id}>
+              {myActiveLotteries.map(lottery => (
+                <SelectItem
+                  disabled={!lottery.tickets.length}
+                  key={lottery.id}
+                  value={lottery.id?.toString()}
+                >
                   {lottery.name}
                 </SelectItem>
               ))}
@@ -77,7 +163,7 @@ export default function MakeDrawScreen() {
           </Select>
         </div>
         <Button
-          onClick={handleDraw}
+          onClick={handleDrawLottery}
           disabled={!selectedLottery || isDrawing}
           className="w-full"
         >
