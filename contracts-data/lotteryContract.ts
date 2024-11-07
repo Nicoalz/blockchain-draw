@@ -104,6 +104,7 @@ const lotteryContractAbi = [
               { internalType: 'uint256', name: 'id', type: 'uint256' },
               { internalType: 'uint256', name: 'lotteryId', type: 'uint256' },
               { internalType: 'address', name: 'owner', type: 'address' },
+              { internalType: 'bool', name: 'isWinning', type: 'bool' },
             ],
             internalType: 'struct LotteryPlatform.Ticket[]',
             name: 'tickets',
@@ -134,6 +135,7 @@ const lotteryContractAbi = [
               { internalType: 'uint256', name: 'id', type: 'uint256' },
               { internalType: 'uint256', name: 'lotteryId', type: 'uint256' },
               { internalType: 'address', name: 'owner', type: 'address' },
+              { internalType: 'bool', name: 'isWinning', type: 'bool' },
             ],
             internalType: 'struct LotteryPlatform.Ticket[]',
             name: 'tickets',
@@ -164,6 +166,7 @@ const lotteryContractAbi = [
               { internalType: 'uint256', name: 'id', type: 'uint256' },
               { internalType: 'uint256', name: 'lotteryId', type: 'uint256' },
               { internalType: 'address', name: 'owner', type: 'address' },
+              { internalType: 'bool', name: 'isWinning', type: 'bool' },
             ],
             internalType: 'struct LotteryPlatform.Ticket[]',
             name: 'tickets',
@@ -187,6 +190,7 @@ const lotteryContractAbi = [
           { internalType: 'uint256', name: 'id', type: 'uint256' },
           { internalType: 'uint256', name: 'lotteryId', type: 'uint256' },
           { internalType: 'address', name: 'owner', type: 'address' },
+          { internalType: 'bool', name: 'isWinning', type: 'bool' },
         ],
         internalType: 'struct LotteryPlatform.Ticket[]',
         name: '',
@@ -205,6 +209,7 @@ const lotteryContractAbi = [
           { internalType: 'uint256', name: 'id', type: 'uint256' },
           { internalType: 'uint256', name: 'lotteryId', type: 'uint256' },
           { internalType: 'address', name: 'owner', type: 'address' },
+          { internalType: 'bool', name: 'isWinning', type: 'bool' },
         ],
         internalType: 'struct LotteryPlatform.Ticket',
         name: '',
@@ -248,6 +253,7 @@ const lotteryContractAbi = [
       { internalType: 'uint256', name: 'id', type: 'uint256' },
       { internalType: 'uint256', name: 'lotteryId', type: 'uint256' },
       { internalType: 'address', name: 'owner', type: 'address' },
+      { internalType: 'bool', name: 'isWinning', type: 'bool' },
     ],
     stateMutability: 'view',
     type: 'function',
@@ -275,7 +281,7 @@ const lotteryContractAbi = [
 ];
 
 const lotteryContractAddressBaseSepolia =
-  '0xbF40c0Ab92D8763367a56EC1cfBD4Fc94374FA12' as Address;
+  '0x3C3b4BF89E9357fed6480fc5C0d007E42393Ad4d' as Address;
 
 export const lotteryContract: TContract = {
   abi: lotteryContractAbi,
