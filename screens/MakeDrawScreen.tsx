@@ -14,7 +14,6 @@ import {
   useAccount,
   useChainId,
   useReadContract,
-  useTransactionConfirmations,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi';
@@ -79,10 +78,9 @@ export default function MakeDrawScreen() {
     },
   });
 
-  const { data: confirmationData, isLoading: isConfirmationLoading } =
-    useWaitForTransactionReceipt({
-      hash: txHash,
-    });
+  const { data: confirmationData } = useWaitForTransactionReceipt({
+    hash: txHash,
+  });
 
   useEffect(() => {
     if (confirmationData) {
